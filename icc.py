@@ -52,10 +52,7 @@ if __name__ == "__main__":
     file = open('main.cpp', 'r')
     # ----------
     code = ['' if l[0] == '#' else l.replace('\n', '') \
-        .replace('    ', '') \
-        .replace('<<', '') \
-        .replace('>>', '') \
-        .replace('endl', '') for l in file.readlines()]
+        .replace('    ', '') for l in file.readlines()]
     file.close()
 
     code = ''.join(code)
@@ -72,7 +69,7 @@ if __name__ == "__main__":
 
     schemes = {}
 
-    font = ImageFont.truetype(r'font.ttf', 18) # TODO подобрать значение
+    font = ImageFont.truetype(r'font.ttf', 14) # TODO подобрать значение
 
     for func in funcs:
         schemes[func] = Scheme(func, parts[func], font, parts[0])

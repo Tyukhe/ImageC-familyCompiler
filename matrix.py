@@ -8,7 +8,6 @@ class Matrix:
         return self.column, self.row
 
     def __getitem__(self, key):
-        key = (key[1], key[0])
         if type(key) != tuple or key[0] < 0 or key[1] < 0:
             raise TypeError
         try:
@@ -17,7 +16,6 @@ class Matrix:
             return None
 
     def __setitem__(self, key, value):
-        key = (key[1], key[0])
         if type(key) != tuple or key[0] < 0 or key[1] < 0:
             raise TypeError
         while key[0] >= self.row:
@@ -31,7 +29,6 @@ class Matrix:
 
 
     def __delitem__(self, key):
-        key = (key[1], key[0])
         if type(key) != tuple or key[0] < 0 or key[1] < 0:
             raise TypeError
         try:
@@ -52,16 +49,37 @@ class Matrix:
         for i in range(self.row):
             for j in range(self.column):
                 if self.matrix[i][j] is not None:
-                    res.append((j, i))
+                    res.append((i, j))
         return res
 
     def __str__(self):
         res = ""
         for i in range(self.column):
             for j in range(self.row):
-                if j is None:
+                if self.matrix[j][i] is None:
                     res += f"~\t\t"
                 else:
                     res += f"{self.matrix[j][i]}\t\t"
             res += "\n"
         return res
+
+    def __repr__(self):
+        res = ""
+        for i in range(self.column):
+            for j in range(self.row):
+                if self.matrix[j][i] is None:
+                    res += f"~\t\t"
+                else:
+                    res += f"{self.matrix[j][i]}\t\t"
+            res += "\n"
+        return res
+
+    def __and__(self, other):
+        if len(set(self.keys()) & set(other.keys())) == 0:
+            return True
+        return False
+
+    def __iadd__(self, other):
+        for i in other.keys():
+            self[i] = other[i]
+        return self

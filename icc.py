@@ -2,6 +2,7 @@ from matrix import Matrix
 from PIL import Image, ImageDraw, ImageFont
 from scheme import *
 from sys import argv
+from pprint import pprint
 
 
 def make_tree(code):
@@ -18,7 +19,10 @@ def make_tree(code):
                 count -= 1
                 if count == 0:
                     if 'else' in node:
-                        nodes[-1].append([node] + make_tree(code[c + 1:i]))
+                        if 'if' in node:
+                            nodes[-1].append([node] + make_tree(code[c + 1:i]))
+                        else:
+                            nodes[-1] += [node] + make_tree(code[c + 1:i])
                         node = ''
                         c = False
                     else:
@@ -68,6 +72,8 @@ if __name__ == "__main__":
             parts[0].append(i)
 
     schemes = {}
+
+    pprint(parts)
 
     font = ImageFont.truetype(r'font.ttf', 14) # TODO подобрать значение
 

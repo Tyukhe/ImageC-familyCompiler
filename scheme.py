@@ -38,5 +38,6 @@ class Scheme:
 
         for key in matrix.keys():
             matrix[key].draw((key[0] * cellWith + cellWith / 2, key[1] * cellHeight + cellHeight / 2), holst)
+            matrix[key].draw_arrows((key[0] * cellWith + cellWith / 2, key[1] * cellHeight + cellHeight / 2), (cellWith, cellHeight), holst)
         img.save(self.name)
         img.show()

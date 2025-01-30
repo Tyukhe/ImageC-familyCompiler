@@ -81,7 +81,6 @@ class Branch:
         down = 1
         for i in self.value:
             lcount = 0
-            ldown = 0
             lmatrix, ldown = i.get_matrix((x, y + lcount + down))
             while not(res & lmatrix):
                 lcount += 1

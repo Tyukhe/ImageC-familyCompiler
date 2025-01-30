@@ -1,15 +1,22 @@
 from PIL import Image, ImageDraw
 
 class Block:
-    def __init__(self, text, ab, font):
+    def __init__(self, text, font):
         self.text = text
         self.font = font
 
+        self.a = 0
+        self.b = 0
         self.w, self.h = self.font.getmask(self.text).getbbox()[2], self.font.getmask(self.text).getbbox()[3]
-        self.a, self.b = ab
 
     def __str__(self):
         return self.text
+
+    def __repr__(self):
+        return str(type(self)) + ':' + self.text
+
+    def set_ab(self, ab):
+        self.a, self.b = ab
 
     def draw_arrows(self, xy, cell, holst, dirs=(True, False, False, True)):
         x, y = xy
@@ -25,7 +32,7 @@ class Block:
         if dirs[3]:
             holst.line((x, y + self.a / 2, x, y + cy / 2), 'black', 3)
 
-    def draw(self, xy:tuple, holst:ImageDraw):
+    def draw(self, xy, holst):
         x, y = xy
         holst.text((x - self.w / 2, y - self.h / 2), self.text, fill='black', font=self.font)
         holst.rectangle((x - self.b / 2, y - self.a / 2, x + self.b / 2, y + self.a / 2), outline="black", width=3)
@@ -66,6 +73,16 @@ class For(Block):
         holst.line((x + self.a / 2, y + self.a / 2, x + self.b / 2, y), 'black', 3)
 
 
+class While(Block):
+    def draw(self, xy, holst):
+        x, y = xy
+        holst.text((x - self.w / 2, y - self.h / 2), self.text, fill='black', font=self.font)
+        holst.line((x + self.b / 2, y, x, y - self.a / 2), 'black', 3)
+        holst.line((x, y - self.a / 2, x - self.b / 2, y), 'black', 3)
+        holst.line((x - self.b / 2, y, x, y + self.a / 2), 'black', 3)
+        holst.line((x, y + self.a / 2, x + self.b / 2, y), 'black', 3)
+
+
 class Func(Block):
     def draw(self, xy, holst):
         x, y = xy
@@ -84,5 +101,3 @@ class Inout(Block):
         holst.line((x - self.b / 2 + self.a * 0.25, y - self.a / 2, x - self.b / 2, y + self.a / 2), 'black', 3)
         holst.line((x - self.b / 2, y + self.a / 2, x + self.b / 2 - self.a * 0.25, y + self.a / 2), 'black', 3)
 
-
-2

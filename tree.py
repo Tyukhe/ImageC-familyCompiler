@@ -1,5 +1,6 @@
 from matrix import Matrix
 from pprint import pprint
+from blocks import *
 
 class Branch:
     def __init__(self, item=None, value=None, parent=None):
@@ -17,7 +18,10 @@ class Branch:
             self.addressing()
 
     def __str__(self):
-        return str(self.item)
+        res = [str(self.item)]
+        for i in self.value:
+            res.append(str(i))
+        return str(res)
 
     def __repr__(self):
         return str(self.item)
@@ -66,45 +70,25 @@ class Branch:
             return self.parent
         return self.parent.value[self.addr[-1] - 1]
 
-    def get_layers(self):
-        res = [[self]]
-        counter = [[self, -1]]
-        while len(counter) != 0:
-            local_res = []
-            new_counter = []
-            for i in counter:
-                i[1] += 1
-                if len(i[0].value) != i[1]:
-                    new_counter.append(i)
-                    local_res.append(i[0][i[1]])
-                    if len(i[0][i[1]].value) != 0:
-                        new_counter.append([i[0][i[1]], -1])
-            res.append(local_res)
-            counter = new_counter
-        del res[-1]
-        return res
-
-    def get_matrix(self, xy, root=True):
+    def get_matrix(self, xy):
         res = Matrix()
-        res[xy] = self
         x, y = xy
-        if not root:
+        if type(self.item) == While:
             x += 1
-        c = 1
-        for i in range(len(self.value)):
-            if len(self.value[i]) == 0:
-                res[x, y + i + c] = self.value[i]
-            else:
-                for j in range(10):
-                    print('Warning')
-                    matrix = self.value[i].get_matrix((x + j, y + i + c), False)
-                    if matrix & res:
-                        res += matrix
-                        # c += matrix.column
-                        break
-                else:
-                    raise MemoryError
-        return res
+        res[x, y] = self.item
+        if type(self.item) == If:
+            x += 1
+        down = 1
+        for i in self.value:
+            lcount = 0
+            ldown = 0
+            lmatrix, ldown = i.get_matrix((x, y + lcount + down))
+            while not(res & lmatrix):
+                lcount += 1
+                lmatrix, ldown = i.get_matrix((x, y + lcount + down))
+            down += ldown
+            res += lmatrix
+        return res, down
 
-b = Branch('r', ['0', '1', '2', ['3', '30', '31'], ['4', ['40', '400'], ['41', '410', '411']], ['5', '50', ['51', '510']], '6'])
-pprint(b.get_matrix((0, 0)))
+# b = Branch('r', ['0', '1', '2', ['3', '30', '31'], ['4', ['40', '400'], ['41', '410', '411']], ['5', '50', ['51', '510']], '6'])
+# pprint(b.get_matrix((0, 0)))

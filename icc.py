@@ -31,17 +31,6 @@ def slice_brackets(text, index):
     return 0
 
 
-def make_block(text, font):
-    if 'if' in text:
-        return If(text[text.index('(') + 1:slice_brackets(text, text.index('('))], font)
-    elif 'for' in text:
-        return For(text[text.index('(') + 1:slice_brackets(text, text.index('('))], font)
-    elif 'while' in text:
-        return While(text[text.index('(') + 1:slice_brackets(text, text.index('('))], font)
-    else:
-        return Block(text, font)
-
-
 def make_nodes(code):
     nodes = []
     node = ''
@@ -61,21 +50,6 @@ def make_nodes(code):
     return nodes
 
 
-def make_tree(nodes, font):
-    tree = []
-    for node in nodes:
-        if isinstance(node, list):
-            if any(i in node[0] for i in ['if', 'for', 'while']):
-                tree.append(make_tree(node, font))
-            elif 'else' in node[0]:
-                tree += make_tree(node[1:], font)
-            else:
-                tree += make_tree(node, font)
-        else:
-            tree.append(make_block(node, font))
-    return tree
-
-
 if __name__ == "__main__":
     # ----------
     # if len(argv) == 1:
@@ -90,7 +64,7 @@ if __name__ == "__main__":
         .replace('    ', '') for l in file.readlines()])
     file.close()
 
-    font = ImageFont.truetype(r'font.ttf', 14) # TODO подобрать значение
+    font = ImageFont.truetype(r'font.ttf', 16) # TODO подобрать значение
 
     nodes = make_nodes(code)
 
@@ -99,10 +73,10 @@ if __name__ == "__main__":
 
     for i in nodes:
         if type(i) is list:
-            parts[i[0]] = Branch(Startend("Начало", font), make_tree(i[1:], font))
+            parts[i[0]] = i[1:]
             funcs.append(i[0])
         else:
-            parts[0].append(make_block(i, font))
+            parts[0].append(i)
 
     schemes = {}
 

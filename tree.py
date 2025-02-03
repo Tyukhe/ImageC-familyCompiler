@@ -18,10 +18,7 @@ class Branch:
             self.addressing()
 
     def __str__(self):
-        res = [str(self.item)]
-        for i in self.value:
-            res.append(str(i))
-        return str(res)
+        return str(self.get_tree())
 
     def __repr__(self):
         return str(self.item)
@@ -39,6 +36,13 @@ class Branch:
     def __len__(self):
         return len(self.value)
 
+    def get_max_str(self):
+        res = ""
+        for i in str(self.item).split('\n'):
+            if len(res) < len(i):
+                res = i
+        return res
+
     def addressing(self):
         for i in self:
             i.set_addr()
@@ -54,6 +58,12 @@ class Branch:
             return self
         return self.parent.get_root()
 
+    def get_tree(self):
+        res = [self]
+        for i in self.value:
+            res.append(i.get_tree())
+        return res
+
     def get_list(self):
         res = [self]
         for i in self.value:
@@ -61,14 +71,30 @@ class Branch:
         return res
 
     def get_next(self):
-        if len(self.parent.value) == self.addr[-1] + 1:
-            return self.parent.next()
-        return self.parent.value[self.addr[-1] + 1]
-
-    def get_previous(self):
-        if self.addr[-1] == 0:
+        if self.parent is None:
+            return None
+        if len(self.parent.value) != self.addr[-1] + 1:
+            return self.parent.value[self.addr[-1] + 1]
+        if type(self.parent.item)in [While, For]:
             return self.parent
-        return self.parent.value[self.addr[-1] - 1]
+        res = self.parent.get_next()
+        if res is None:
+            return None
+        while res.item.elss == self.parent.item.elss:
+            res = res.get_next()
+            if res is None:
+                return None
+        return res
+
+    def get_children(self):
+        if not (self.parent is None) and self.parent.parent is None and len(self.parent.value) == self.addr[-1] + 1:
+            return []
+        res = [] if self.get_next() is None else [self.get_next()]
+        if len(self.value) != 0:
+            res.append(self.value[0])
+        if type(self.item) == For:
+            res = res[::-1]
+        return res
 
     def get_matrix(self, xy):
         res = Matrix()

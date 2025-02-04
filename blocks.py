@@ -45,9 +45,11 @@ class Block:
             children[0].draw_arrows(cell, holst, (0, 1, 0, 0))
         else:
             self.draw_arrows(cell, holst, (0, 0, 0, 1))
-            holst.line((self.get_points(cell)[7], self.get_points(cell)[7][0], children[0].get_points(cell)[4][1]),
+            holst.line((self.get_points(cell)[7], children[0].get_points(cell)[6][0], self.get_points(cell)[7][1]),
                        'black', self.line)
-            holst.line((self.get_points(cell)[7][0], children[0].get_points(cell)[4][1], children[0].get_points(cell)[4]),
+            holst.line((children[0].get_points(cell)[6][0], self.get_points(cell)[7][1], children[0].get_points(cell)[6][0], children[0].get_points(cell)[4][1]),
+                       'black', self.line)
+            holst.line((children[0].get_points(cell)[6][0], children[0].get_points(cell)[4][1], children[0].get_points(cell)[4]),
                        'black', self.line)
             children[0].draw_arrows(cell, holst, (1, 0, 0, 0))
         if len(children) > 1:

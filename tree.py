@@ -92,7 +92,7 @@ class Branch:
         res = [] if self.get_next() is None else [self.get_next()]
         if len(self.value) != 0:
             res.append(self.value[0])
-        if type(self.item) == For:
+        if type(self.item) in [For, While]:
             res = res[::-1]
         return res
 

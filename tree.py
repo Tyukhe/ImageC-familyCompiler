@@ -36,13 +36,6 @@ class Branch:
     def __len__(self):
         return len(self.value)
 
-    def get_max_str(self):
-        res = ""
-        for i in str(self.item).split('\n'):
-            if len(res) < len(i):
-                res = i
-        return res
-
     def addressing(self):
         for i in self:
             i.set_addr()
@@ -71,12 +64,14 @@ class Branch:
         return res
 
     def get_next(self):
-        if self.parent is None:
+        if self.parent is None or (type(self.item) == Startend and self.item.text[0] != "Начало"):
             return None
         if len(self.parent.value) != self.addr[-1] + 1:
             return self.parent.value[self.addr[-1] + 1]
-        if type(self.parent.item)in [While, For]:
+        if type(self.parent.item) == For:
             return self.parent
+        if type(self.parent.item) == While:
+            return self.parent.get_next()
         res = self.parent.get_next()
         if res is None:
             return None
@@ -92,14 +87,16 @@ class Branch:
         res = [] if self.get_next() is None else [self.get_next()]
         if len(self.value) != 0:
             res.append(self.value[0])
-        if type(self.item) in [For, While]:
+        if type(self.item) == For:
             res = res[::-1]
+        if type(self.item) == While and self.item.start:
+            res = [res[-1]]
         return res
 
     def get_matrix(self, xy):
         res = Matrix()
         x, y = xy
-        if type(self.item) == While:
+        if type(self.item) == While and self.item.start and type(self.parent.item) == While:
             x += 1
         res[x, y] = self.item
         if type(self.item) == If:

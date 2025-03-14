@@ -52,16 +52,16 @@ class Block:
         cx, cy = cell
         if dirs[0]:
             holst.line((self.get_points(cell)[0], self.get_points(cell)[4]), 'black', self.lineWidth)
-            holst.line((self.get_points(cell)[0], self.get_points(cell)[0][0] + self.a / 40,
-                        self.get_points(cell)[0][1] - self.a / 15), 'black', self.lineWidth)
-            holst.line((self.get_points(cell)[0], self.get_points(cell)[0][0] - self.a / 40,
-                        self.get_points(cell)[0][1] - self.a / 15), 'black', self.lineWidth)
+            holst.line((self.get_points(cell)[0], self.get_points(cell)[0][0] + self.a / 60,
+                        self.get_points(cell)[0][1] - self.a / 25), 'black', self.lineWidth)
+            holst.line((self.get_points(cell)[0], self.get_points(cell)[0][0] - self.a / 60,
+                        self.get_points(cell)[0][1] - self.a / 25), 'black', self.lineWidth)
         if dirs[1]:
             holst.line((self.get_points(cell)[1], self.get_points(cell)[5]), 'black', self.lineWidth)
-            holst.line((self.get_points(cell)[1], self.get_points(cell)[1][0] - self.a / 15,
-                        self.get_points(cell)[1][1] + self.a / 40), 'black', self.lineWidth)
-            holst.line((self.get_points(cell)[1], self.get_points(cell)[1][0] - self.a / 15,
-                        self.get_points(cell)[1][1] - self.a / 40), 'black', self.lineWidth)
+            holst.line((self.get_points(cell)[1], self.get_points(cell)[1][0] - self.a / 25,
+                        self.get_points(cell)[1][1] + self.a / 60), 'black', self.lineWidth)
+            holst.line((self.get_points(cell)[1], self.get_points(cell)[1][0] - self.a / 25,
+                        self.get_points(cell)[1][1] - self.a / 60), 'black', self.lineWidth)
         if dirs[2]:
             holst.line((self.get_points(cell)[2], self.get_points(cell)[6]), 'black', self.lineWidth)
         if dirs[3]:
@@ -126,7 +126,7 @@ class If(Block):
         holst.line((x, y + self.a / 2, x + self.b / 2, y), 'black', self.lineWidth)
 
         h = self.font.getmask("ДаНет").getbbox()[3]
-        holst.text((x + self.b / 2 + h * 0.5, y - h * 1.5), "Да", fill='black', font=self.font)
+        holst.text((x + self.b / 1.9 + h * 0.5, y - h * 1.5), "Да", fill='black', font=self.font)
         holst.text((x + h * 0.5, y + self.a / 2), "Нет", fill='black', font=self.font)
 
         # holst.rectangle((x - cell[0] / 2, y - cell[1] / 2, x + cell[0] / 2, y + cell[1] / 2), outline="black", width=self.lineWidth)

@@ -82,7 +82,12 @@ class Branch:
         return res
 
     def get_children(self):
+        flag = False
+        if "Цикл №0" in str(self.item):
+            flag = True
         if not (self.parent is None) and self.parent.parent is None and len(self.parent.value) == self.addr[-1] + 1:
+            if len(self.value) != 0:
+                return [self.value[0]]
             return []
         res = [] if self.get_next() is None else [self.get_next()]
         if len(self.value) != 0:
@@ -91,6 +96,8 @@ class Branch:
             res = res[::-1]
         if type(self.item) == While and self.item.start:
             res = [res[-1]]
+        if flag:
+            print(res)
         return res
 
     def get_matrix(self, xy):

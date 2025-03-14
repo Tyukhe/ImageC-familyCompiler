@@ -62,7 +62,7 @@ if __name__ == "__main__":
         .replace('    ', '') for l in file.readlines()])
     file.close()
 
-    font = ImageFont.truetype(r'font.ttf', 14) # TODO подобрать значение
+    font = ImageFont.truetype(r'font.ttf', 20) # TODO подобрать значение
 
     nodes = make_nodes(code)
 

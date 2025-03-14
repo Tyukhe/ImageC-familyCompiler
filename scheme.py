@@ -58,23 +58,23 @@ class WaysDrawer:
             nexts[0].draw_arrows(self.cell, self.holst, (0, 1, 0, 0))
         elif current.x > nexts[0].x:
             current.draw_arrows(self.cell, self.holst, (0, 0, 0, 1))
-            print(self.is_line_poss(current.get_points(self.cell)[7], (current.get_points(self.cell)[7][0],
-                             current.get_points(self.cell)[7][1] + current.lineWidth * 4)))
+            # print(self.is_line_poss(current.get_points(self.cell)[7], (current.get_points(self.cell)[7][0],
+                             # current.get_points(self.cell)[7][1] + current.lineWidth * 4)))
             self.holst.line((current.get_points(self.cell)[7], current.get_points(self.cell)[7][0],
                              current.get_points(self.cell)[7][1] + current.lineWidth * 4),
                             'black', current.lineWidth)
-            print(self.is_line_poss((current.get_points(self.cell)[7][0],
-                             current.get_points(self.cell)[7][1] + current.lineWidth * 4),
-                                    (nexts[0].get_points(self.cell)[6][0],
-                             current.get_points(self.cell)[7][1] + current.lineWidth * 4)))
+            # print(self.is_line_poss((current.get_points(self.cell)[7][0],
+                             # current.get_points(self.cell)[7][1] + current.lineWidth * 4),
+                                    # (nexts[0].get_points(self.cell)[6][0],
+                             # current.get_points(self.cell)[7][1] + current.lineWidth * 4)))
             self.holst.line((current.get_points(self.cell)[7][0],
                              current.get_points(self.cell)[7][1] + current.lineWidth * 4,
                              nexts[0].get_points(self.cell)[6][0],
                              current.get_points(self.cell)[7][1] + current.lineWidth * 4),
                             'black', current.lineWidth)
-            print(self.is_line_poss((nexts[0].get_points(self.cell)[6][0],
-                             current.get_points(self.cell)[7][1] + current.lineWidth * 4),
-                                    (nexts[0].get_points(self.cell)[6][0], nexts[0].get_points(self.cell)[4][1])))
+            # print(self.is_line_poss((nexts[0].get_points(self.cell)[6][0],
+                             # current.get_points(self.cell)[7][1] + current.lineWidth * 4),
+                                    # (nexts[0].get_points(self.cell)[6][0], nexts[0].get_points(self.cell)[4][1])))
             self.holst.line((nexts[0].get_points(self.cell)[6][0],
                              current.get_points(self.cell)[7][1] + current.lineWidth * 4,
                              nexts[0].get_points(self.cell)[6][0], nexts[0].get_points(self.cell)[4][1]),
@@ -126,7 +126,7 @@ class Scheme:
 
         self.name = f'{name}.png'
         self.font = font
-        self.tree = Branch(Startend("Начало", font), self.make_tree(tree, font))
+        self.tree = Branch(Startend("Начало", font), self.make_tree(tree))
         self.tree.item.set_global_name(name)
         self.matrix, _ = self.tree.get_matrix((0, 0))
 
@@ -135,13 +135,13 @@ class Scheme:
             if len(i.item.get_max_str()) > len(maxString):
                 maxString = i.item.get_max_str()
         self.w, self.h = self.font.getmask(maxString).getbbox()[2], self.font.getmask(maxString).getbbox()[3]
-        self.b = self.w * 1# .4  # TODO подобрать значение
+        self.b = self.w * 1.4  # TODO подобрать значение
         self.a = self.b / 1.5
 
         for key in self.matrix.keys():
-            self.matrix[key].prepare(key, (self.a, self.b), int(font.size * 0.19))
+            self.matrix[key].prepare(key, (self.a, self.b), int(font.size * 0.15)) #TODO Подобрать значения
 
-    def make_block(self, text, font):
+    def make_block(self, text):
         if any([j in text and text.index(j) == 0 for j in self.types]):
             if '=' in text:
                 res = ""
@@ -153,58 +153,55 @@ class Scheme:
                         j += 1
                     res += text[i + 1:j + 1] + ', '
                     text = text[text.index("=") + 1:]
-                return Block(res[:-2], font)
+                return Block(res[:-2], self.font)
             else:
                 return False
         elif 'cin' in text:
             text = text.replace(" >> ", "").replace('endl', "").replace("cin", '')
-            return Inout(['Ввод'] + wrap(text, 200), font)
+            return Inout(['Ввод'] + wrap(text, 35), self.font)
         elif 'cout' in text:
             text = text.replace(" << ", "").replace('endl', "").replace("cout", '')
-            return Inout(['Вывод'] + wrap(text, 200), font)
+            return Inout(['Вывод'] + wrap(text, 35), self.font)
         elif 'if' in text:
-            return If(text[text.index('(') + 1:slice_brackets(text, text.index('('))], font)
+            return If(text[text.index('(') + 1:slice_brackets(text, text.index('('))], self.font)
         elif 'for' in text:
-            return For(text[text.index('(') + 1:slice_brackets(text, text.index('('))], font)
+            return For(text[text.index('(') + 1:slice_brackets(text, text.index('('))], self.font)
         elif 'whilend' in text:
-            return While(f'Цикл №{text[text.index('Е') + 1:text.index('З')]}', font, False)
+            return While(f'Цикл №{text[text.index('Е') + 1:text.index('З')]}', self.font, False)
         elif 'while' in text:
             return While([f'Цикл №{text[text.index('Е') + 1:text.index('З')]}',
-                          text[text.index('(') + 1:slice_brackets(text, text.index('('))]], font, True)
+                          text[text.index('(') + 1:slice_brackets(text, text.index('('))]], self.font, True)
         elif "return" in text:
-            return Startend("Конец", font)  # Inout(["Вывод", text[7:]], font)
+            return Startend("Конец", self.font)  # Inout(["Вывод", text[7:]], font)
         elif '(' in text and text[text.index('(') - 1] not in ['+', '-', '*', '/', ' ']:
-            return Func(text, font)
-        return Block(text, font)
+            return Func(text, self.font)
+        return Block(text, self.font)
 
-    def make_tree(self, nodes, font, elss=0, count=None):
+    def make_tree(self, nodes, elss=0, count=None):
+        if not (count is None):
+            self.counter = count + 1
         tree = []
         for node in nodes:
             if isinstance(node, list):
                 if 'if' in node[0]:
                     f = lambda x: [f(i) if isinstance(i, list) else i.set_els(elss) for i in x]
-                    tree.append(f(self.make_tree(node, font, elss + 1)))
+                    tree.append(f(self.make_tree(node, elss + 1)))
                 elif 'else' in node[0]:
                     f = lambda x: [f(i) if isinstance(i, list) else i.set_els(elss) for i in x]
-                    tree += f(self.make_tree(node[1:], font))
+                    tree += f(self.make_tree(node[1:]))
                     elss += 1
                 elif 'for' in node[0]:
-                    tree.append(self.make_tree(node, font))
+                    tree.append(self.make_tree(node))
                 elif 'while' in node[0]:
-                    if count is None:
-                        tree.append(
-                            self.make_tree([node[0] + f'Е{self.counter}З'] + node[1:] + [f'whilendЕ{self.counter}З'], font, 0, self.counter))
-                        self.counter += 1
-                    else:
-                        count += 1
-                        tree.append(
-                            self.make_tree([node[0] + f'Е{count}З'] + node[1:] + [f'whilendЕ{count}З'],
-                                           font, 0, count))
-                        self.counter += count
+                    tree.append(
+                        self.make_tree([node[0] + f'Е{self.counter}З'] + node[1:] + [f'whilendЕ{self.counter}З'], 0, self.counter))
                 else:
-                    tree += self.make_tree(node, font)
+                    if len(node) == 1:
+                        tree.append(self.make_block(node))
+                    else:
+                        tree += self.make_tree(node)
             else:
-                blocks = self.make_block(node, font)
+                blocks = self.make_block(node)
                 if blocks:
                     if isinstance(blocks, list):
                         tree += blocks
@@ -213,8 +210,8 @@ class Scheme:
         return tree
 
     def render(self):
-        cellHeight = self.a + self.w / 4  # TODO Подобрать значения
-        cellWith = self.b + self.w / 4
+        cellHeight = self.a + self.w / 8  # TODO Подобрать значения
+        cellWith = self.b + self.w / 8
         size = (int(self.matrix.column * cellWith), int(self.matrix.row * cellHeight))
         print(size)
 
